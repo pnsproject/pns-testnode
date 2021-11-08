@@ -397,7 +397,11 @@ impl pns_registrar::registrar::WeightInfo for TestWeightInfo {
 
 impl pns_registrar::redeem_code::WeightInfo for TestWeightInfo {
 	fn mint_redeem(len: Option<u32>) -> Weight {
-		10_000
+		if let Some(len) = len {
+			len as Weight * 10_000
+		}else { 
+			10_000
+		}
 	}
 
 	fn name_redeem() -> Weight {
