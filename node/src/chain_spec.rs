@@ -1,6 +1,9 @@
+use std::collections::BTreeSet;
+
 use node_template_runtime::{
-	AccountId, AuraConfig, BalancesConfig, GenesisConfig, GrandpaConfig, Signature, SudoConfig,
-	SystemConfig, WASM_BINARY,
+	AccountId, AuraConfig, BalancesConfig, GenesisConfig, GrandpaConfig, PnsNftConfig,
+	PnsPriceOracleConfig, PnsRedeemCodeConfig, PnsRegistrarConfig, PnsRegistryConfig, Signature,
+	SudoConfig, SystemConfig, WASM_BINARY,
 };
 use sc_service::ChainType;
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
@@ -136,20 +139,54 @@ fn testnet_genesis(
 			code: wasm_binary.to_vec(),
 			changes_trie_config: Default::default(),
 		},
-		balances: BalancesConfig {
-			// Configure endowed accounts with initial balance of 1 << 60.
-			balances: endowed_accounts.iter().cloned().map(|k| (k, 1 << 60)).collect(),
-		},
 		aura: AuraConfig {
 			authorities: initial_authorities.iter().map(|x| (x.0.clone())).collect(),
 		},
 		grandpa: GrandpaConfig {
 			authorities: initial_authorities.iter().map(|x| (x.1.clone(), 1)).collect(),
 		},
+		balances: BalancesConfig {
+			// Configure endowed accounts with initial balance of 1 << 60.
+			balances: endowed_accounts.iter().cloned().map(|k| (k, 1 << 60)).collect(),
+		},
+		transaction_payment: Default::default(),
 		sudo: SudoConfig {
 			// Assign network admin rights.
 			key: root_key,
 		},
-		transaction_payment: Default::default(),
+		pns_nft: PnsNftConfig {
+			tokens: vec![(
+				get_account_id_from_seed::<sr25519::Public>("Alice"),
+				vec![1, 2, 3],
+				(),
+				vec![(
+					get_account_id_from_seed::<sr25519::Public>("Alice"),
+					vec![3, 2, 1],
+					Default::default(),
+					sp_core::convert_hash::<sp_core::H256, [u8; 32]>(
+						&sp_core::hashing::keccak_256("dot".as_bytes()),
+					),
+				)],
+			)],
+		},
+		pns_registry: PnsRegistryConfig {
+			origin: vec![],
+			official: Some(get_account_id_from_seed::<sr25519::Public>("Alice")),
+		},
+		pns_registrar: PnsRegistrarConfig { infos: vec![], blacklist: BTreeSet::new() },
+		pns_redeem_code: PnsRedeemCodeConfig {
+			official_signer: Some(get_from_seed::<sr25519::Public>("Alice")),
+			redeems: None,
+		},
+		pns_price_oracle: PnsPriceOracleConfig {
+			base_prices: vec![
+				10000, 10000, 10000, 10000, 7000, 7000, 7000, 4000, 4000, 4000, 3000, 3000, 3000,
+				2000, 2000, 2000, 1000, 1000, 1000, 1000,
+			],
+			rent_prices: vec![
+				10000, 10000, 10000, 10000, 7000, 7000, 7000, 4000, 4000, 4000, 3000, 3000, 3000,
+				2000, 2000, 2000, 1000, 1000, 1000, 1000,
+			],
+		},
 	}
 }

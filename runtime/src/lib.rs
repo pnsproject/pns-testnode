@@ -279,6 +279,141 @@ impl pallet_template::Config for Runtime {
 	type Event = Event;
 }
 
+parameter_types! {
+	pub const MaxMetadata: u32 = 15;
+}
+
+impl pns_registrar::nft::Config for Runtime {
+	type ClassId = u32;
+
+	type TokenId = Hash;
+
+	type TotalId = u128;
+
+	type ClassData = ();
+
+	type TokenData = pns_registrar::registry::Record;
+
+	type MaxClassMetadata = MaxMetadata;
+
+	type MaxTokenMetadata = MaxMetadata;
+}
+
+impl pns_registrar::registry::Config for Runtime {
+	type Event = Event;
+
+	type WeightInfo = TestWeightInfo;
+
+	type Registrar = pns_registrar::registrar::Pallet<Runtime>;
+
+	type ResolverId = u32;
+}
+
+parameter_types! {
+	pub const GracePeriod: BlockNumber = 90 * DAYS;
+	pub const MinRegistrationDuration: BlockNumber = 28 * DAYS;
+	pub const DefaultCapacity: u32 = 20;
+	pub const BaseNode: Hash = sp_core::H256([206, 21, 156, 243, 67, 128, 117, 125, 25, 50, 168, 228, 167, 78, 133, 232, 89, 87, 176, 167, 165, 45, 156, 86, 108, 10, 60, 141, 97, 51, 208, 247]);
+}
+impl pns_registrar::registrar::Config for Runtime {
+	type Event = Event;
+
+	type ResolverId = u32;
+
+	type Registry = pns_registrar::registry::Pallet<Runtime>;
+
+	type Currency = pallet_balances::Pallet<Runtime>;
+
+	type GracePeriod = GracePeriod;
+
+	type DefaultCapacity = DefaultCapacity;
+
+	type BaseNode = BaseNode;
+
+	type WeightInfo = TestWeightInfo;
+
+	type MinRegistrationDuration = MinRegistrationDuration;
+
+	type PriceOracle = pns_registrar::price_oracle::Pallet<Runtime>;
+}
+
+parameter_types! {
+	pub const MaximumLength: u8 = 10;
+}
+
+impl pns_registrar::price_oracle::Config for Runtime {
+	type Event = Event;
+
+	type Currency = pallet_balances::Pallet<Runtime>;
+
+	type MaximumLength = MaximumLength;
+
+	type WeightInfo = TestWeightInfo;
+}
+
+impl pns_registrar::redeem_code::Config for Runtime {
+	type Event = Event;
+
+	type WeightInfo = TestWeightInfo;
+
+	type Registrar = pns_registrar::registrar::Pallet<Runtime>;
+
+	type BaseNode = BaseNode;
+}
+
+pub struct TestWeightInfo;
+
+impl pns_registrar::registry::WeightInfo for TestWeightInfo {
+	fn set_approval_for_all() -> Weight {
+		10_000
+	}
+
+	fn set_resolver() -> Weight {
+		10_000
+	}
+
+	fn destroy() -> Weight {
+		10_000
+	}
+}
+
+impl pns_registrar::registrar::WeightInfo for TestWeightInfo {
+	fn mint_subname() -> Weight {
+		10_000
+	}
+
+	fn register() -> Weight {
+		10_000
+	}
+
+	fn renew() -> Weight {
+		10_000
+	}
+
+	fn set_owner() -> Weight {
+		10_000
+	}
+}
+
+impl pns_registrar::redeem_code::WeightInfo for TestWeightInfo {
+	fn mint_redeem(len: Option<u32>) -> Weight {
+		10_000
+	}
+
+	fn name_redeem() -> Weight {
+		10_000
+	}
+
+	fn name_redeem_any() -> Weight {
+		10_000
+	}
+}
+
+impl pns_registrar::price_oracle::WeightInfo for TestWeightInfo {
+	fn set_price() -> Weight {
+		10_000
+	}
+}
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
 	pub enum Runtime where
@@ -296,6 +431,12 @@ construct_runtime!(
 		Sudo: pallet_sudo,
 		// Include the custom logic from the pallet-template in the runtime.
 		TemplateModule: pallet_template,
+		// PNS
+		PnsNft: pns_registrar::nft,
+		PnsRegistry: pns_registrar::registry,
+		PnsRegistrar: pns_registrar::registrar,
+		PnsRedeemCode: pns_registrar::redeem_code,
+		PnsPriceOracle: pns_registrar::price_oracle,
 	}
 );
 
