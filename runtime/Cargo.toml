@@ -23,6 +23,11 @@ git = 'https://github.com/pnsproject/pns-pallets.git'
 branch = 'monthly'
 
 
+[dependencies.rpc-def]
+default-features = false
+git = "https://github.com/pnsproject/pns-rpc.git"
+
+
 [build-dependencies.substrate-wasm-builder]
 git = 'https://github.com/paritytech/substrate.git'
 tag = 'monthly-2021-11'
@@ -225,6 +230,7 @@ std = [
     'pallet-transaction-payment-rpc-runtime-api/std',
     'pallet-transaction-payment/std',
     'pns-registrar/std',
+    'rpc-def/std',
     'sp-api/std',
     'sp-block-builder/std',
     'sp-consensus-aura/std',

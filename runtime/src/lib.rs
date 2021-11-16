@@ -393,13 +393,17 @@ impl pns_registrar::registrar::WeightInfo for TestWeightInfo {
 	fn set_owner() -> Weight {
 		10_000
 	}
+
+	fn reclaimed() -> Weight {
+		10_000
+	}
 }
 
 impl pns_registrar::redeem_code::WeightInfo for TestWeightInfo {
 	fn mint_redeem(len: Option<u32>) -> Weight {
 		if let Some(len) = len {
 			len as Weight * 10_000
-		}else { 
+		} else {
 			10_000
 		}
 	}
@@ -471,7 +475,47 @@ pub type Executive = frame_executive::Executive<
 	AllPallets,
 >;
 
+use pns_registrar::traits::{PriceOracle, Registrar};
+use sp_std::vec::Vec;
+
 impl_runtime_apis! {
+	impl rpc_def::PnsRpcApi<Block,AccountId,Hash,Balance,BlockNumber> for Runtime {
+		fn query_nodes(owner:AccountId)->Vec<Hash>{
+			PnsNft::token_form_prefix(owner, 0)
+		}
+
+		fn renew_price(name_len: u8,duration: BlockNumber)->Balance {
+			<PnsPriceOracle as PriceOracle>::renew_price(name_len as usize, duration)
+		}
+
+		fn registry_price(name_len: u8,duration: BlockNumber)->Balance {
+			<PnsPriceOracle as PriceOracle>::registry_price(name_len as usize, duration)
+		}
+
+		fn register_fee(name_len: u8)->Balance{
+			<PnsPriceOracle as PriceOracle>::register_fee(name_len as usize)
+		}
+
+		fn query_operators(caller: AccountId)->Vec<AccountId> {
+			PnsRegistry::get_operators(caller)
+		}
+
+		fn check_expires_registrable(node: Hash)->bool{
+			<PnsRegistrar as Registrar>::check_expires_registrable(node).is_ok()
+		}
+
+		fn check_expires_renewable(node: Hash)->bool{
+			<PnsRegistrar as Registrar>::check_expires_renewable(node).is_ok()
+		}
+
+		fn check_expires_useable(node: Hash)->bool{
+			<PnsRegistrar as Registrar>::check_expires_useable(node).is_ok()
+		}
+
+		fn query_subnode(node: Hash,label: Hash)->Hash{
+			PnsRegistry::subnode(node, label)
+		}
+	}
 	impl sp_api::Core<Block> for Runtime {
 		fn version() -> RuntimeVersion {
 			VERSION
