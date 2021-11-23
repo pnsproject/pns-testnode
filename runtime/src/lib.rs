@@ -512,8 +512,14 @@ impl_runtime_apis! {
 			<PnsRegistrar as Registrar>::check_expires_useable(node).is_ok()
 		}
 
-		fn query_subnode(node: Hash,label: Hash)->Hash{
-			PnsRegistry::subnode(node, label)
+		fn get_duration_by_day(days: u128) -> BlockNumber {
+			let days = days as u32;
+			days.checked_mul(DAYS).unwrap_or_default()
+		}
+
+		fn get_duration_by_year(years: u128) -> BlockNumber {
+			let years = years as u32;
+			years.checked_mul(DAYS*365).unwrap_or_default()
 		}
 	}
 	impl sp_api::Core<Block> for Runtime {
