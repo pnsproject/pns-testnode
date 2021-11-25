@@ -315,6 +315,9 @@ parameter_types! {
 	pub const DefaultCapacity: u32 = 20;
 	pub const BaseNode: Hash = sp_core::H256([206, 21, 156, 243, 67, 128, 117, 125, 25, 50, 168, 228, 167, 78, 133, 232, 89, 87, 176, 167, 165, 45, 156, 86, 108, 10, 60, 141, 97, 51, 208, 247]);
 }
+
+pub type Moment = u64;
+
 impl pns_registrar::registrar::Config for Runtime {
 	type Event = Event;
 
@@ -335,6 +338,10 @@ impl pns_registrar::registrar::Config for Runtime {
 	type MinRegistrationDuration = MinRegistrationDuration;
 
 	type PriceOracle = pns_registrar::price_oracle::Pallet<Runtime>;
+
+	type Moment = Moment;
+
+	type NowProvider = pallet_timestamp::Pallet<Runtime>;
 }
 
 parameter_types! {
@@ -349,6 +356,8 @@ impl pns_registrar::price_oracle::Config for Runtime {
 	type MaximumLength = MaximumLength;
 
 	type WeightInfo = TestWeightInfo;
+
+	type Moment = Moment;
 }
 
 impl pns_registrar::redeem_code::Config for Runtime {
@@ -359,6 +368,8 @@ impl pns_registrar::redeem_code::Config for Runtime {
 	type Registrar = pns_registrar::registrar::Pallet<Runtime>;
 
 	type BaseNode = BaseNode;
+
+	type Moment = Moment;
 }
 
 pub struct TestWeightInfo;
@@ -479,16 +490,16 @@ use pns_registrar::traits::{PriceOracle, Registrar};
 use sp_std::vec::Vec;
 
 impl_runtime_apis! {
-	impl rpc_def::PnsRpcApi<Block,AccountId,Hash,Balance,BlockNumber> for Runtime {
+	impl rpc_def::PnsRpcApi<Block,AccountId,Hash,Balance,Moment> for Runtime {
 		fn query_nodes(owner:AccountId)->Vec<Hash>{
 			PnsNft::token_form_prefix(owner, 0)
 		}
 
-		fn renew_price(name_len: u8,duration: BlockNumber)->Balance {
+		fn renew_price(name_len: u8,duration: Moment)->Balance {
 			<PnsPriceOracle as PriceOracle>::renew_price(name_len as usize, duration)
 		}
 
-		fn registry_price(name_len: u8,duration: BlockNumber)->Balance {
+		fn registry_price(name_len: u8,duration: Moment)->Balance {
 			<PnsPriceOracle as PriceOracle>::registry_price(name_len as usize, duration)
 		}
 
@@ -510,16 +521,6 @@ impl_runtime_apis! {
 
 		fn check_expires_useable(node: Hash)->bool{
 			<PnsRegistrar as Registrar>::check_expires_useable(node).is_ok()
-		}
-
-		fn get_duration_by_day(days: u128) -> BlockNumber {
-			let days = days as u32;
-			days.checked_mul(DAYS).unwrap_or_default()
-		}
-
-		fn get_duration_by_year(years: u128) -> BlockNumber {
-			let years = years as u32;
-			years.checked_mul(DAYS*365).unwrap_or_default()
 		}
 	}
 	impl sp_api::Core<Block> for Runtime {

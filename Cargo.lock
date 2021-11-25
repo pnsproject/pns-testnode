@@ -4235,7 +4235,7 @@ checksum = "989d43012e2ca1c4a02507c67282691a0a3207f9dc67cec596b43fe925b3d325"
 [[package]]
 name = "pns-registrar"
 version = "0.1.0"
-source = "git+https://github.com/pnsproject/pns-pallets.git?branch=monthly#0e2c121720359da523c3ef8301e5c75047543807"
+source = "git+https://github.com/pnsproject/pns-pallets.git?branch=monthly#5ce9bb3c40961a0d50d3ef40ecb14e70edd0e7e6"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4768,7 +4768,7 @@ dependencies = [
 [[package]]
 name = "rpc-def"
 version = "0.1.0"
-source = "git+https://github.com/pnsproject/pns-rpc.git#558c6af10fa8527fe3ca91a3b8bd277251181ba3"
+source = "git+https://github.com/pnsproject/pns-rpc.git#5b0caffdd88000d0fc51a8283e196d04c7e2957e"
 dependencies = [
  "parity-scale-codec",
  "sp-api",
@@ -4779,7 +4779,7 @@ dependencies = [
 [[package]]
 name = "rpc-impl"
 version = "0.1.0"
-source = "git+https://github.com/pnsproject/pns-rpc.git#558c6af10fa8527fe3ca91a3b8bd277251181ba3"
+source = "git+https://github.com/pnsproject/pns-rpc.git#5b0caffdd88000d0fc51a8283e196d04c7e2957e"
 dependencies = [
  "frame-system-rpc-runtime-api",
  "futures 0.3.18",
@@ -7204,7 +7204,7 @@ version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1f559b464de2e2bdabcac6a210d12e9b5a5973c251e102c44c585c71d51bd78e"
 dependencies = [
- "cfg-if 1.0.0",
+ "cfg-if 0.1.10",
  "rand 0.8.4",
  "static_assertions",
 ]
