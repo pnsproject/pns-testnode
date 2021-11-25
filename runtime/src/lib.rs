@@ -98,7 +98,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	//   `spec_version`, and `authoring_version` are the same between Wasm and native.
 	// This value is set to 100 to notify Polkadot-JS App (https://polkadot.js.org/apps) to use
 	//   the compatible custom types.
-	spec_version: 100,
+	spec_version: 101,
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
@@ -310,8 +310,8 @@ impl pns_registrar::registry::Config for Runtime {
 }
 
 parameter_types! {
-	pub const GracePeriod: BlockNumber = 90 * DAYS;
-	pub const MinRegistrationDuration: BlockNumber = 28 * DAYS;
+	pub const GracePeriod: BlockNumber = 90 * 24 * 60 * 60;
+	pub const MinRegistrationDuration: BlockNumber = 28 * 24 * 60 * 60;
 	pub const DefaultCapacity: u32 = 20;
 	pub const BaseNode: Hash = sp_core::H256([206, 21, 156, 243, 67, 128, 117, 125, 25, 50, 168, 228, 167, 78, 133, 232, 89, 87, 176, 167, 165, 45, 156, 86, 108, 10, 60, 141, 97, 51, 208, 247]);
 }
