@@ -4235,7 +4235,7 @@ checksum = "989d43012e2ca1c4a02507c67282691a0a3207f9dc67cec596b43fe925b3d325"
 [[package]]
 name = "pns-registrar"
 version = "0.1.0"
-source = "git+https://github.com/pnsproject/pns-pallets.git?branch=monthly#5ce9bb3c40961a0d50d3ef40ecb14e70edd0e7e6"
+source = "git+https://github.com/pnsproject/pns-pallets.git?branch=monthly#5ed47e75705ee409ed166fd43fc6f107b64917fd"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -7204,7 +7204,7 @@ version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1f559b464de2e2bdabcac6a210d12e9b5a5973c251e102c44c585c71d51bd78e"
 dependencies = [
- "cfg-if 0.1.10",
+ "cfg-if 1.0.0",
  "rand 0.8.4",
  "static_assertions",
 ]
