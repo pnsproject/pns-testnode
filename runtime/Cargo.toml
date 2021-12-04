@@ -22,6 +22,11 @@ default-features = false
 git = 'https://github.com/pnsproject/pns-pallets.git'
 branch = 'monthly'
 
+[dependencies.pns-resolvers]
+default-features = false
+git = 'https://github.com/pnsproject/pns-pallets.git'
+branch = 'monthly'
+
 
 [dependencies.rpc-def]
 default-features = false
@@ -230,6 +235,7 @@ std = [
     'pallet-transaction-payment-rpc-runtime-api/std',
     'pallet-transaction-payment/std',
     'pns-registrar/std',
+    'pns-resolvers/std',
     'rpc-def/std',
     'sp-api/std',
     'sp-block-builder/std',

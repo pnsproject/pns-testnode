@@ -2,8 +2,8 @@ use std::collections::BTreeSet;
 
 use node_template_runtime::{
 	AccountId, AuraConfig, BalancesConfig, GenesisConfig, GrandpaConfig, PnsNftConfig,
-	PnsPriceOracleConfig, PnsRedeemCodeConfig, PnsRegistrarConfig, PnsRegistryConfig, Signature,
-	SudoConfig, SystemConfig, WASM_BINARY,
+	PnsPriceOracleConfig, PnsRedeemCodeConfig, PnsRegistrarConfig, PnsRegistryConfig,
+	PnsResolversConfig, Signature, SudoConfig, SystemConfig, WASM_BINARY,
 };
 use sc_service::ChainType;
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
@@ -188,5 +188,6 @@ fn testnet_genesis(
 				2000, 2000, 2000, 1000, 1000, 1000, 1000,
 			],
 		},
+		pns_resolvers: PnsResolversConfig { accounts: vec![], texts: vec![] },
 	}
 }

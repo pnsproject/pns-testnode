@@ -372,6 +372,31 @@ impl pns_registrar::redeem_code::Config for Runtime {
 	type Moment = Moment;
 }
 
+impl pns_resolvers::Config for Runtime {
+	type Event = Event;
+
+	type WeightInfo = TestWeightInfo;
+
+	type AccountIndex = u32;
+
+	type RegistryChecker = TestChecker;
+
+	type DomainHash = Hash;
+}
+
+pub struct TestChecker;
+
+impl pns_resolvers::traits::RegistryChecker for TestChecker {
+	type Hash = Hash;
+
+	type AccountId = AccountId;
+	// TODO: 跨链验证
+	fn check_node_useable(node: Self::Hash, owner: &Self::AccountId) -> bool {
+		pns_registrar::nft::TokensByOwner::<Runtime>::contains_key((owner, 0, node)) &&
+			PnsRegistrar::check_expires_useable(node).is_ok()
+	}
+}
+
 pub struct TestWeightInfo;
 
 impl pns_registrar::registry::WeightInfo for TestWeightInfo {
@@ -433,6 +458,17 @@ impl pns_registrar::price_oracle::WeightInfo for TestWeightInfo {
 		10_000
 	}
 }
+
+impl pns_resolvers::WeightInfo for TestWeightInfo {
+	fn set_text(content_len: usize) -> Weight {
+		100 * content_len as u64
+	}
+
+	fn set_account() -> Weight {
+		10_000
+	}
+}
+
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
 	pub enum Runtime where
@@ -456,6 +492,7 @@ construct_runtime!(
 		PnsRegistrar: pns_registrar::registrar,
 		PnsRedeemCode: pns_registrar::redeem_code,
 		PnsPriceOracle: pns_registrar::price_oracle,
+		PnsResolvers: pns_resolvers,
 	}
 );
 
