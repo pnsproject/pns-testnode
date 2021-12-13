@@ -172,12 +172,10 @@ fn testnet_genesis(
 		pns_registry: PnsRegistryConfig {
 			origin: vec![],
 			official: Some(get_account_id_from_seed::<sr25519::Public>("Alice")),
+			managers: vec![get_account_id_from_seed::<sr25519::Public>("Alice")],
 		},
 		pns_registrar: PnsRegistrarConfig { infos: vec![], blacklist: BTreeSet::new() },
-		pns_redeem_code: PnsRedeemCodeConfig {
-			official_signer: Some(get_from_seed::<sr25519::Public>("Alice")),
-			redeems: None,
-		},
+		pns_redeem_code: PnsRedeemCodeConfig { redeems: None },
 		pns_price_oracle: PnsPriceOracleConfig {
 			base_prices: vec![
 				10000, 10000, 10000, 10000, 7000, 7000, 7000, 4000, 4000, 4000, 3000, 3000, 3000,

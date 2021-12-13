@@ -342,10 +342,13 @@ impl pns_registrar::registrar::Config for Runtime {
 	type Moment = Moment;
 
 	type NowProvider = pallet_timestamp::Pallet<Runtime>;
+
+	type Manager = pns_registrar::registry::Pallet<Runtime>;
 }
 
 parameter_types! {
 	pub const MaximumLength: u8 = 10;
+	pub const RateScale: Balance = 100_000;
 }
 
 impl pns_registrar::price_oracle::Config for Runtime {
@@ -358,6 +361,21 @@ impl pns_registrar::price_oracle::Config for Runtime {
 	type WeightInfo = TestWeightInfo;
 
 	type Moment = Moment;
+
+	type ExchangeRate = TestRate;
+
+	type RateScale = RateScale;
+
+	type Manager = pns_registrar::registry::Pallet<Runtime>;
+}
+pub struct TestRate;
+
+impl pns_registrar::traits::ExchangeRate for TestRate {
+	type Balance = Balance;
+
+	fn get_exchange_rate() -> Self::Balance {
+		3_140_000
+	}
 }
 
 impl pns_registrar::redeem_code::Config for Runtime {
@@ -370,6 +388,12 @@ impl pns_registrar::redeem_code::Config for Runtime {
 	type BaseNode = BaseNode;
 
 	type Moment = Moment;
+
+	type Public = <Signature as Verify>::Signer;
+
+	type Signature = Signature;
+
+	type Manager = pns_registrar::registry::Pallet<Runtime>;
 }
 
 impl pns_resolvers::Config for Runtime {
@@ -411,6 +435,18 @@ impl pns_registrar::registry::WeightInfo for TestWeightInfo {
 	fn destroy() -> Weight {
 		10_000
 	}
+
+	fn set_official() -> Weight {
+		10_000
+	}
+
+	fn add_manger() -> Weight {
+		10_000
+	}
+
+	fn remove_manger() -> Weight {
+		10_000
+	}
 }
 
 impl pns_registrar::registrar::WeightInfo for TestWeightInfo {
@@ -431,6 +467,14 @@ impl pns_registrar::registrar::WeightInfo for TestWeightInfo {
 	}
 
 	fn reclaimed() -> Weight {
+		10_000
+	}
+
+	fn add_blacklist() -> Weight {
+		10_000
+	}
+
+	fn remove_blacklist() -> Weight {
 		10_000
 	}
 }
@@ -533,15 +577,15 @@ impl_runtime_apis! {
 		}
 
 		fn renew_price(name_len: u8,duration: Moment)->Balance {
-			<PnsPriceOracle as PriceOracle>::renew_price(name_len as usize, duration)
+			<PnsPriceOracle as PriceOracle>::renew_price(name_len as usize, duration).unwrap()
 		}
 
 		fn registry_price(name_len: u8,duration: Moment)->Balance {
-			<PnsPriceOracle as PriceOracle>::registry_price(name_len as usize, duration)
+			<PnsPriceOracle as PriceOracle>::registry_price(name_len as usize, duration).unwrap()
 		}
 
 		fn register_fee(name_len: u8)->Balance{
-			<PnsPriceOracle as PriceOracle>::register_fee(name_len as usize)
+			<PnsPriceOracle as PriceOracle>::register_fee(name_len as usize).unwrap()
 		}
 
 		fn query_operators(caller: AccountId)->Vec<AccountId> {
